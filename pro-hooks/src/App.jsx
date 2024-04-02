@@ -1,61 +1,60 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import { useMemo, useCallback } from 'react';
 
 const LARGE_NUMBER = 1000000000;
 
 function App() {
-  const [value, setValue] = useState(0);
-  const [dark, setTheme] = useState(true);
+  const [counter, setCounter] = useState(0);
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeName, setThemeName] = useState('dark');
-  const [currentList, setList] = useState([]);
+  const [currentList, setCurrentList] = useState([]);
 
-  const delayFunction = useCallback(() => {
+  const delayFunction = useMemo(() => {
     console.log('Delay Function Ran');
-    return () => {
-      for (let index = 0; index < LARGE_NUMBER; index++) {}
-      return value + 2;
-    };
-  }, [value]);
+    for (let index = 0; index < LARGE_NUMBER; index++) {}
+    return counter + 2;
+  }, [counter]);
 
   const testFunction = useCallback(() => {
-    return [value * 3, value * 4];
-  }, [value]);
+    return [counter * 3, counter * 4];
+  }, [counter]);
 
   useEffect(() => {
     console.log('Callback Function was called');
   }, [testFunction]);
 
   useEffect(() => {
-    if (dark) {
+    if (isDarkTheme) {
       setThemeName('dark');
     } else {
       setThemeName('light');
     }
-  }, [dark]);
+  }, [isDarkTheme]);
 
-  const handleClick = () => {
-    setTheme(!dark);
+  const toggleTheme = () => {
+    setIsDarkTheme(!isDarkTheme);
   };
 
   const handleChangeValue = () => {
-    setValue(value + 1);
+    setCounter(counter + 1);
   };
 
   const handleList = () => {
-    setList(testFunction());
+    setCurrentList(testFunction);
   };
 
-  const styleTheme = {
-    backgroundColor: dark ? 'black' : '#ccc7c7',
+  const themeStyle = {
+    backgroundColor: isDarkTheme ? 'black' : '#ccc7c7',
   };
 
   return (
-    <div className="page" style={styleTheme}>
-      <button onClick={handleClick}>{themeName}</button>
-      <h1>{value}</h1>
+    <div className="page" style={themeStyle}>
+      <button onClick={toggleTheme}>{themeName}</button>
+      <h1>{counter}</h1>
       <button onClick={handleChangeValue}>Change Value</button>
       <button onClick={handleList}>Show List</button>
-      <h2>{delayFunction()}</h2>
+      <h2>{delayFunction}</h2>
       <div>
         {currentList.map((item, index) => {
           return <h2 key={index}>{item}</h2>;
